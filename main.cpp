@@ -9,14 +9,12 @@
 
 using json = nlohmann::json;
 
-// Task structure with all required fields
 struct Task {
     int id;
     std::string description;
     bool completed;
     int priority; // 1=high, 2=medium, 3=low
 
-    // Convert Task to JSON
     json to_json() const {
         return json{
             {"id", id},
@@ -26,7 +24,6 @@ struct Task {
         };
     }
 
-    // Create Task from JSON
     static Task from_json(const json& j) {
         return Task{
             j.at("id"),
@@ -60,7 +57,6 @@ public:
             return;
         }
 
-        // Sort by priority (high to low) then by ID
         std::vector<Task> sorted_tasks = tasks;
         std::sort(sorted_tasks.begin(), sorted_tasks.end(), [](const Task& a, const Task& b) {
             if (a.priority != b.priority) return a.priority < b.priority;
@@ -125,7 +121,7 @@ public:
 
         std::ofstream file(filename);
         if (file.is_open()) {
-            file << j.dump(4); // Pretty print with 4 spaces
+            file << j.dump(4);
             file.close();
         } else {
             std::cerr << "Error saving tasks to file." << std::endl;
@@ -135,7 +131,6 @@ public:
     void load_tasks() {
         std::ifstream file(filename);
         if (!file.is_open()) {
-            // File doesn't exist, create empty one
             save_tasks();
             return;
         }
@@ -178,7 +173,7 @@ void show_help() {
 int parse_priority(const std::string& priority_str) {
     if (priority_str == "high") return 1;
     if (priority_str == "low") return 3;
-    return 2; // medium is default
+    return 2;
 }
 
 std::vector<std::string> split_command(const std::string& command) {
@@ -213,9 +208,8 @@ int main() {
             show_help();
         } else if (command == "add" && tokens.size() >= 2) {
             std::string description;
-            int priority = 2; // Default to medium
+            int priority = 2;
 
-            // Join description parts
             description = tokens[1];
             for (size_t i = 2; i < tokens.size(); ++i) {
                 if (tokens[i] == "-p" && i+1 < tokens.size()) {
